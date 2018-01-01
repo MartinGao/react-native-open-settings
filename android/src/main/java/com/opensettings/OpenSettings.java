@@ -2,6 +2,7 @@ package com.opensettings;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.provider.Settings;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -35,5 +36,20 @@ public class OpenSettings extends ReactContextBaseJavaModule {
         i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         reactContext.startActivity(i);
     }
+
+    @ReactMethod
+    public void openSystemSettings() {
+        final Intent i = new Intent();
+        i.setAction(Settings.ACTION_SETTINGS);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        reactContext.startActivity(i);
+    }
+
+    @ReactMethod
+    public void reboot() {
+      PowerManager pm = (PowerManager)this.reactContext.getSystemService(reactContext.POWER_SERVICE);
+      pm.reboot("bootloader");
+    }
+
     //endregion
 }

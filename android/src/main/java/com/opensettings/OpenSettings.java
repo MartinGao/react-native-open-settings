@@ -49,8 +49,12 @@ public class OpenSettings extends ReactContextBaseJavaModule {
     public void reboot() {
       // PowerManager pm = (PowerManager)this.reactContext.getSystemService(reactContext.POWER_SERVICE);
       // pm.reboot("bootloader");
-      Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", "reboot" });
-      proc.waitFor();
+      try {
+        Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", "reboot" });
+        proc.waitFor();
+      } catch (Exception ex) {
+        // Log.i(TAG, "Could not reboot", ex);
+      }
     }
 
     //endregion

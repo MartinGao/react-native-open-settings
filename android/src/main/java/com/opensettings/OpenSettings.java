@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
 
 public class OpenSettings extends ReactContextBaseJavaModule {
 
@@ -55,6 +60,17 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       } catch (Exception ex) {
         // Log.i(TAG, "Could not reboot", ex);
       }
+    }
+
+    @ReactMethod
+    public void getMemoryInfo(Promise promise) {
+      MemoryInfo mi = new MemoryInfo();
+      ActivityManager activityManager = (ActivityManager) reactContext.getSystemService(reactContext.ACTIVITY_SERVICE);
+      activityManager.getMemoryInfo(mi);
+      WritableMap memoryInfo = Arguments.createMap();
+      memoryInfo.putInt("total", (int) mi.totalMem);
+      memoryInfo.putInt("avail", (int) mi.availMem);
+      promise.resolve(memoryInfo);
     }
 
     //endregion

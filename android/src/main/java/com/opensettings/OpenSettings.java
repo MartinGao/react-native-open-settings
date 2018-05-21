@@ -63,6 +63,16 @@ public class OpenSettings extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setDeviceTime(final String dateString) {
+      try {
+        Process proc = Runtime.getRuntime().exec(new String[] { "su", "0", "toolbox", "date", "-s", dateString });
+        proc.waitFor();
+      } catch (Exception ex) {
+        // Log.i(TAG, "Could not reboot", ex);
+      }
+    }
+
+    @ReactMethod
     public void getMemoryInfo(Promise promise) {
       MemoryInfo mi = new MemoryInfo();
       ActivityManager activityManager = (ActivityManager) reactContext.getSystemService(reactContext.ACTIVITY_SERVICE);

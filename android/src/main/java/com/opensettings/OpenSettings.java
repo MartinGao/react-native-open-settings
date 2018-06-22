@@ -3,6 +3,7 @@ package com.opensettings;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -67,6 +68,19 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       try {
         Process proc = Runtime.getRuntime().exec(new String[] { "su", "0", "toolbox", "date", "-s", dateString });
         proc.waitFor();
+      } catch (Exception ex) {
+        // Log.i(TAG, "Could not reboot", ex);
+      }
+    }
+    
+    @ReactMethod
+    public void setDeviceTimeMillis(final Double currentTimeMillis) {
+      try {
+        Process procOne = Runtime.getRuntime().exec(new String[] { "su", "chmod", "666", "/dev/alarm" });
+        procOne.waitFor();
+        SystemClock.setCurrentTimeMillis(currentTimeMillis.longValue());
+        Process procTwo = Runtime.getRuntime().exec(new String[] { "su", "chmod", "664", "/dev/alarm" });
+        procTwo.waitFor();
       } catch (Exception ex) {
         // Log.i(TAG, "Could not reboot", ex);
       }

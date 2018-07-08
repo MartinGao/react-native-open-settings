@@ -73,6 +73,33 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       }
     }
     
+    public static int[] turnDate(Date aa) {
+      SimpleDateFormat newsimpleFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+  		int[] timeArray = new int[5];
+  		String currentData = newsimpleFormat.format(aa);
+  		timeArray[0] = Integer.parseInt(currentData.split("-")[0]);
+  		timeArray[1] = Integer.parseInt(currentData.split("-")[1]);
+  		timeArray[2] = Integer.parseInt(currentData.split("-")[2]);
+  		timeArray[3] = Integer.parseInt(currentData.split("-")[3]);
+  		timeArray[4] = Integer.parseInt(currentData.split("-")[4]);
+  		return timeArray;
+  	}
+
+    @ReactMethod
+    public void autoShutdownAndRestart(Double onTimeMillis, Double offTimeMillis, Promise promise) {
+      Calendar c = Calendar.getInstance();
+      Calendar c2 = Calendar.getInstance();
+      Date onDate = new Date(onTimeMillis);
+      Date offDate = new Date(offTimeMillis);
+
+      Intent mIntent = new Intent("android.56iq.intent.action.setpoweronoff");
+      mIntent.putExtra("timeon", turnDate(onDate));
+      mIntent.putExtra("timeoff", turnDate(offDate));
+      mIntent.putExtra("enable", true);
+      reactContext.sendBroadcast(mIntent);
+      promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(offDate)));
+    }
+    
     @ReactMethod
     public void setDeviceTimeMillis(final Double currentTimeMillis) {
       try {

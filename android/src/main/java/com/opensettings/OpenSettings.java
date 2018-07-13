@@ -1,12 +1,22 @@
 package com.opensettings;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Arrays;
+import java.text.SimpleDateFormat;
+
 import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -15,6 +25,26 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+
+class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
+
+  private ReactContext reactContext;
+
+  public ExecuteAtSpecificTimeReceiver(final ReactContext reactContext) {
+    super();
+    this.reactContext = reactContext;
+  }
+  private void sendEvent(ReactContext reactContext, String eventName, String payload) {
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, payload);
+  }
+
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    sendEvent(reactContext, "executeAtSpecificTimeEventFromBroadcastReceiver", intent.getStringExtra("targetTaskName"));
+  }
+}
 
 public class OpenSettings extends ReactContextBaseJavaModule {
 
@@ -72,7 +102,20 @@ public class OpenSettings extends ReactContextBaseJavaModule {
         // Log.i(TAG, "Could not reboot", ex);
       }
     }
-    
+
+    @ReactMethod
+    public void setDeviceTimeMillis(final Double currentTimeMillis) {
+      try {
+        Process procOne = Runtime.getRuntime().exec(new String[] { "su", "chmod", "666", "/dev/alarm" });
+        procOne.waitFor();
+        SystemClock.setCurrentTimeMillis(currentTimeMillis.longValue());
+        Process procTwo = Runtime.getRuntime().exec(new String[] { "su", "chmod", "664", "/dev/alarm" });
+        procTwo.waitFor();
+      } catch (Exception ex) {
+        // Log.i(TAG, "Could not reboot", ex);
+      }
+    }
+
     public static int[] turnDate(Date aa) {
       SimpleDateFormat newsimpleFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
   		int[] timeArray = new int[5];
@@ -89,8 +132,8 @@ public class OpenSettings extends ReactContextBaseJavaModule {
     public void autoShutdownAndRestart(Double onTimeMillis, Double offTimeMillis, Promise promise) {
       Calendar c = Calendar.getInstance();
       Calendar c2 = Calendar.getInstance();
-      Date onDate = new Date(onTimeMillis);
-      Date offDate = new Date(offTimeMillis);
+      Date onDate = new Date(onTimeMillis.longValue());
+      Date offDate = new Date(offTimeMillis.longValue());
 
       Intent mIntent = new Intent("android.56iq.intent.action.setpoweronoff");
       mIntent.putExtra("timeon", turnDate(onDate));
@@ -99,18 +142,19 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       reactContext.sendBroadcast(mIntent);
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
     }
-    
+
     @ReactMethod
-    public void setDeviceTimeMillis(final Double currentTimeMillis) {
-      try {
-        Process procOne = Runtime.getRuntime().exec(new String[] { "su", "chmod", "666", "/dev/alarm" });
-        procOne.waitFor();
-        SystemClock.setCurrentTimeMillis(currentTimeMillis.longValue());
-        Process procTwo = Runtime.getRuntime().exec(new String[] { "su", "chmod", "664", "/dev/alarm" });
-        procTwo.waitFor();
-      } catch (Exception ex) {
-        // Log.i(TAG, "Could not reboot", ex);
-      }
+    public void turnOffLCDBacklight(Promise promise) {
+      Intent mIntent = new Intent("com.szdrcc.lcd.backlight.Off");
+      reactContext.sendBroadcast(mIntent);
+      // promise.resolve("Done. LCD Backlight Turned Off.");
+    }
+
+    @ReactMethod
+    public void turnOnLCDBacklight(Promise promise) {
+      Intent mIntent = new Intent("com.szdrcc.lcd.backlight.On");
+      reactContext.sendBroadcast(mIntent);
+      // promise.resolve("Done. LCD Backlight Turned On.");
     }
 
     @ReactMethod
@@ -122,6 +166,21 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       memoryInfo.putInt("total", (int) mi.totalMem);
       memoryInfo.putInt("avail", (int) mi.availMem);
       promise.resolve(memoryInfo);
+    }
+
+    private void sendEvent(ReactContext reactContext, String eventName) {
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
+    }
+
+    @ReactMethod
+    public void executeOneTaskAtSpecificTime(Double timeMillis, String targetTaskName) {
+      AlarmManager alarmManager = (AlarmManager)reactContext.getSystemService(reactContext.ALARM_SERVICE);
+      ExecuteAtSpecificTimeReceiver executeAtSpecificTimeReceiver = new ExecuteAtSpecificTimeReceiver(reactContext);
+      reactContext.getCurrentActivity().registerReceiver(executeAtSpecificTimeReceiver, new IntentFilter("com.martin.cool." + Double.toString(timeMillis)));
+      Intent intent = new Intent("com.martin.cool."+Double.toString(timeMillis));
+      intent.putExtra("targetTaskName", targetTaskName);
+      PendingIntent pendingIntent = PendingIntent.getBroadcast(reactContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+      alarmManager.set(AlarmManager.RTC_WAKEUP, timeMillis.longValue(), pendingIntent);
     }
 
     //endregion

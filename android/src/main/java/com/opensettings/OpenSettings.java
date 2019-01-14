@@ -94,6 +94,12 @@ public class OpenSettings extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void rebootZX() {
+      Intent mIntent = new Intent("android.intent.action.ZX_REBOOT");
+      reactContext.sendBroadcast(mIntent);
+    }
+
+    @ReactMethod
     public void setDeviceTime(final String dateString) {
       try {
         Process proc = Runtime.getRuntime().exec(new String[] { "su", "0", "toolbox", "date", "-s", dateString });

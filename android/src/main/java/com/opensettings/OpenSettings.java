@@ -150,6 +150,18 @@ public class OpenSettings extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void autoShutdownAndRestartZX(Double onTimeMillis, Double offTimeMillis, Promise promise) {
+      Intent mIntent = new Intent("android.56iq.intent.action.setpoweronoff");
+      mIntent.putExtra("timeon", onTimeMillis);
+      mIntent.putExtra("timeoff", offTimeMillis);
+      mIntent.putExtra("enable", true);
+      reactContext.sendBroadcast(mIntent);
+      Date onDate = new Date(onTimeMillis.longValue());
+      Date offDate = new Date(offTimeMillis.longValue());
+      promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
+    }
+
+    @ReactMethod
     public void turnOffLCDBacklight(Promise promise) {
       Intent mIntent = new Intent("com.szdrcc.lcd.backlight.Off");
       reactContext.sendBroadcast(mIntent);

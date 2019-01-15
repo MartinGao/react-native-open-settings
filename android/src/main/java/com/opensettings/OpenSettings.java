@@ -151,7 +151,7 @@ public class OpenSettings extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void autoShutdownAndRestartZX(Double onTimeMillis, Double offTimeMillis, Promise promise) {
-      Intent mIntent = new Intent("android.56iq.intent.action.setpoweronoff");
+      Intent mIntent = new Intent("android.zx.intent.action.AUTOPOWERONOFF");
       mIntent.putExtra("timeon", onTimeMillis);
       mIntent.putExtra("timeoff", offTimeMillis);
       mIntent.putExtra("enable", true);

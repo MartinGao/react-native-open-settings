@@ -32,7 +32,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
 
   private ReactContext reactContext;
-  private static final String TAG = "Ruijia";
 
   public ExecuteAtSpecificTimeReceiver(final ReactContext reactContext) {
     super();
@@ -51,6 +50,7 @@ class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
 public class OpenSettings extends ReactContextBaseJavaModule {
 
     private ReactContext reactContext;
+    private static final String TAG = "Ruijia";
 
     public OpenSettings(ReactApplicationContext reactContext) {
         super(reactContext);

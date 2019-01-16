@@ -153,17 +153,17 @@ public class OpenSettings extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void autoShutdownAndRestartZX(Double onTimeMillis, Double offTimeMillis, Promise promise) {
-      Log.i(TAG, "autoShutdownAndRestartZX");
-      Log.i(TAG, "onTimeMillis: " + onTimeMillis.toString());
-      Log.i(TAG, "offTimeMillis: " + offTimeMillis.toString());
+      Date onDate = new Date(onTimeMillis.longValue());
+      Date offDate = new Date(offTimeMillis.longValue());
+
+      Log.i(TAG, "autoShutdownAndRestartZX" + " | " + "onTimeMillis: " + onTimeMillis.toString() + " - "+ Arrays.toString(turnDate(onDate)) + " | " + "offTimeMillis: " + offTimeMillis.toString() + " - " + Arrays.toString(turnDate(offDate)));
 
       Intent mIntent = new Intent("android.zx.intent.action.AUTOPOWERONOFF");
       mIntent.putExtra("timeon", onTimeMillis);
       mIntent.putExtra("timeoff", offTimeMillis);
       mIntent.putExtra("enable", true);
       reactContext.sendBroadcast(mIntent);
-      Date onDate = new Date(onTimeMillis.longValue());
-      Date offDate = new Date(offTimeMillis.longValue());
+
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
     }
 

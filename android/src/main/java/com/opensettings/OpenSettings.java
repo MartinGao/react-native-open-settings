@@ -17,6 +17,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -31,6 +32,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
 
   private ReactContext reactContext;
+  private static final String TAG = "Ruijia";
 
   public ExecuteAtSpecificTimeReceiver(final ReactContext reactContext) {
     super();
@@ -151,6 +153,10 @@ public class OpenSettings extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void autoShutdownAndRestartZX(Double onTimeMillis, Double offTimeMillis, Promise promise) {
+      Log.i(TAG, "autoShutdownAndRestartZX");
+      Log.i(TAG, "onTimeMillis: " + onTimeMillis.toString());
+      Log.i(TAG, "offTimeMillis: " + offTimeMillis.toString());
+
       Intent mIntent = new Intent("android.zx.intent.action.AUTOPOWERONOFF");
       mIntent.putExtra("timeon", onTimeMillis);
       mIntent.putExtra("timeoff", offTimeMillis);

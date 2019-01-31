@@ -204,7 +204,7 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       dataOFF.putBoolean("enabled", true);
       dataOFF.putInt("hour", hourOFF);
       dataOFF.putInt("minutes", minuteOFF);
-      dataOFF.putInt("dayofweek", 127);
+      dataOFF.putInt("daysOfWeek", 127);
       mIntent.putExtra("data", dataOFF);
       reactContext.sendBroadcast(mIntent);
 

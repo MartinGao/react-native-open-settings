@@ -208,7 +208,7 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       mIntent.putExtra("data", dataOFF);
       reactContext.sendBroadcast(mIntent);
 
-      promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
+      promise.resolve("Off: " +  String.valueOf(hourOFF) + ":" +  String.valueOf(minuteOFF) ));
     }
 
     @ReactMethod

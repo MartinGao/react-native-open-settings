@@ -1,6 +1,7 @@
 package com.opensettings;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Date;
 import java.util.Arrays;
 import java.text.SimpleDateFormat;
@@ -19,7 +20,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.util.Log;
-
+ import java.util.GregorianCalendar; 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;

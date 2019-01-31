@@ -189,18 +189,18 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       Intent mIntent = new Intent("android.intent.action.ALARMRECEIVER");
 
       // Turn on
-      Bundle dataON = new Bundle();
-      dataON.putInt("id", 1);
-      dataON.putBoolean("enabled", true);
-      dataON.putInt("hour", hourON);
-      dataON.putInt("minutes", minuteON);
-      dataON.putInt("dayofweek", 127);
-      mIntent.putExtra("data", dataON);
-      reactContext.sendBroadcast(mIntent);
+      // Bundle dataON = new Bundle();
+      // dataON.putInt("id", 1);
+      // dataON.putBoolean("enabled", true);
+      // dataON.putInt("hour", hourON);
+      // dataON.putInt("minutes", minuteON);
+      // dataON.putInt("dayofweek", 127);
+      // mIntent.putExtra("data", dataON);
+      // reactContext.sendBroadcast(mIntent);
 
       // Turn off
       Bundle dataOFF = new Bundle();
-      dataOFF.putInt("id", 2);
+      dataOFF.putInt("id", 4);
       dataOFF.putBoolean("enabled", true);
       dataOFF.putInt("hour", hourOFF);
       dataOFF.putInt("minutes", minuteOFF);

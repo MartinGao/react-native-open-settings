@@ -175,13 +175,13 @@ public class OpenSettings extends ReactContextBaseJavaModule {
 
       Calendar calendarON = GregorianCalendar.getInstance();
       calendarON.setTime(onDate);
-      int hourON = calendar.get(Calendar.HOUR_OF_DAY);
-      int minuteON = calendar.get(Calendar.MINUTE); 
+      int hourON = calendarON.get(Calendar.HOUR_OF_DAY);
+      int minuteON = calendarON.get(Calendar.MINUTE); 
 
       Calendar calendarOFF = GregorianCalendar.getInstance();
       calendarOFF.setTime(offDate);
-      int hourOFF = calendar.get(Calendar.HOUR_OF_DAY);
-      int minuteOFF = calendar.get(Calendar.MINUTE); 
+      int hourOFF = calendarOFF.get(Calendar.HOUR_OF_DAY);
+      int minuteOFF = calendarOFF.get(Calendar.MINUTE); 
 
       Log.i(TAG, "autoShutdownAndRestart7Inch" + " | " + "onTimeMillis: " + onTimeMillis.toString() + " - "+ Arrays.toString(turnDate(onDate)) + " | " + "offTimeMillis: " + offTimeMillis.toString() + " - " + Arrays.toString(turnDate(offDate)));
 

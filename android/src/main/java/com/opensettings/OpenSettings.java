@@ -10,6 +10,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -162,6 +163,48 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       mIntent.putExtra("timeon", onTimeMillis);
       mIntent.putExtra("timeoff", offTimeMillis);
       mIntent.putExtra("enable", true);
+      reactContext.sendBroadcast(mIntent);
+
+      promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
+    }
+
+    @ReactMethod
+    public void autoShutdownAndRestart7Inch(Double onTimeMillis, Double offTimeMillis, Promise promise) {
+      Date onDate = new Date(onTimeMillis.longValue());
+      Date offDate = new Date(offTimeMillis.longValue());
+
+      Calendar calendarON = GregorianCalendar.getInstance();
+      calendarON.setTime(onDate);
+      int hourON = calendar.get(Calendar.HOUR_OF_DAY);
+      int minuteON = calendar.get(Calendar.MINUTE); 
+
+      Calendar calendarOFF = GregorianCalendar.getInstance();
+      calendarOFF.setTime(offDate);
+      int hourOFF = calendar.get(Calendar.HOUR_OF_DAY);
+      int minuteOFF = calendar.get(Calendar.MINUTE); 
+
+      Log.i(TAG, "autoShutdownAndRestart7Inch" + " | " + "onTimeMillis: " + onTimeMillis.toString() + " - "+ Arrays.toString(turnDate(onDate)) + " | " + "offTimeMillis: " + offTimeMillis.toString() + " - " + Arrays.toString(turnDate(offDate)));
+
+      Intent mIntent = new Intent("android.intent.action.ALARMRECEIVER");
+
+      // Turn on
+      Bundle dataON = new Bundle();
+      dataON.putInt("id", 1);
+      dataON.putBoolean("enabled", true);
+      dataON.putInt("hour", hourON);
+      dataON.putInt("minutes", minuteON);
+      dataON.putInt("dayofweek", 127);
+      mIntent.putExtra("data", dataON);
+      reactContext.sendBroadcast(mIntent);
+
+      // Turn off
+      Bundle dataOFF = new Bundle();
+      dataOFF.putInt("id", 2);
+      dataOFF.putBoolean("enabled", true);
+      dataOFF.putInt("hour", hourOFF);
+      dataOFF.putInt("minutes", minuteOFF);
+      dataOFF.putInt("dayofweek", 127);
+      mIntent.putExtra("data", dataOFF);
       reactContext.sendBroadcast(mIntent);
 
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));

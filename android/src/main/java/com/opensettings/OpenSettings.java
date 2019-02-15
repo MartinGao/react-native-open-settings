@@ -169,7 +169,7 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
     }
 
-    public void resetAutoShutdownAndRestart7InchHelper(Int id) {
+    public void resetAutoShutdownAndRestart7InchHelper(int id) {
       Intent onIntent = new Intent("android.intent.action.ALARMRECEIVER");
       Bundle data = new Bundle();
       data.putInt("id", id);

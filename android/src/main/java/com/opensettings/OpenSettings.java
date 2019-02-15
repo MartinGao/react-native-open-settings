@@ -186,30 +186,30 @@ public class OpenSettings extends ReactContextBaseJavaModule {
 
       Log.i(TAG, "autoShutdownAndRestart7Inch" + " | " + "onTimeMillis: " + onTimeMillis.toString() + " - "+ Arrays.toString(turnDate(onDate)) + " | " + "offTimeMillis: " + offTimeMillis.toString() + " - " + Arrays.toString(turnDate(offDate)));
 
-
+      Intent onIntent = new Intent("android.intent.action.ALARMRECEIVER");
       // Turn on
-      // Bundle dataON = new Bundle();
-      // dataON.putInt("id", 1);
-      // dataON.putBoolean("enabled", true);
-      // dataON.putInt("hour", hourON);
-      // dataON.putInt("minutes", minuteON);
-      // dataON.putInt("dayofweek", 127);
-      // mIntent.putExtra("data", dataON);
-      // reactContext.sendBroadcast(mIntent);
+      Bundle dataON = new Bundle();
+      dataON.putInt("id", 1);
+      dataON.putBoolean("enabled", true);
+      dataON.putInt("hour", hourON);
+      dataON.putInt("minutes", minuteON);
+      dataON.putInt("dayofweek", 127);
+      onIntent.putExtra("data", dataON);
+      reactContext.sendBroadcast(onIntent);
 
-      Intent mIntent = new Intent("android.intent.action.ALARMRECEIVER");
+      Intent offIntent = new Intent("android.intent.action.ALARMRECEIVER");
       // Turn off
       Bundle dataOFF = new Bundle();
-      dataOFF.putInt("id", 4);
+      dataOFF.putInt("id", 2);
       dataOFF.putBoolean("enabled", true);
       dataOFF.putInt("hour", hourOFF);
       dataOFF.putInt("minutes", minuteOFF);
       dataOFF.putInt("dayofweek", 127);
-      mIntent.putExtra("data", dataOFF);
-      reactContext.sendBroadcast(mIntent);
+      offIntent.putExtra("data", dataOFF);
+      reactContext.sendBroadcast(offIntent);
 
-      // promise.resolve("Off: " +  String.valueOf(hourOFF) + ":" +  String.valueOf(minuteOFF) + " | On: " +  String.valueOf(hourON) + ":" +  String.valueOf(minuteON) );
-      promise.resolve("Off: " +  String.valueOf(hourOFF) + ":" +  String.valueOf(minuteOFF));
+      promise.resolve("Off: " +  String.valueOf(hourOFF) + ":" +  String.valueOf(minuteOFF) + " | On: " +  String.valueOf(hourON) + ":" +  String.valueOf(minuteON) );
+      // promise.resolve("Off: " +  String.valueOf(hourOFF) + ":" +  String.valueOf(minuteOFF));
     }
 
     @ReactMethod

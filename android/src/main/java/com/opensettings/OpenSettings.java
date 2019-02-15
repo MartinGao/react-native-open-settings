@@ -169,6 +169,26 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
     }
 
+    public void resetAutoShutdownAndRestart7InchHelper(Int id) {
+      Intent onIntent = new Intent("android.intent.action.ALARMRECEIVER");
+      Bundle data = new Bundle();
+      data.putInt("id", id);
+      data.putBoolean("enabled", false);
+      onIntent.putExtra("data", data);
+      reactContext.sendBroadcast(onIntent);
+    }
+
+    @ReactMethod
+    public void resetAutoShutdownAndRestart7Inch(Promise promise) {
+      resetAutoShutdownAndRestart7InchHelper(1);
+      resetAutoShutdownAndRestart7InchHelper(2);
+      resetAutoShutdownAndRestart7InchHelper(3);
+      resetAutoShutdownAndRestart7InchHelper(4);
+      resetAutoShutdownAndRestart7InchHelper(5);
+      resetAutoShutdownAndRestart7InchHelper(6);
+      promise.resolve("Reset all AutoShutdownAndRestart");
+    }
+
     @ReactMethod
     public void autoShutdownAndRestart7Inch(Double onTimeMillis, Double offTimeMillis, Promise promise) {
       Date onDate = new Date(onTimeMillis.longValue());

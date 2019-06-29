@@ -34,6 +34,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
 
   private ReactContext reactContext;
+  private static final String TAG = "Ruijia";
 
   public ExecuteAtSpecificTimeReceiver(final ReactContext reactContext) {
     super();
@@ -45,7 +46,27 @@ class ExecuteAtSpecificTimeReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
+    // Testing and useless
     sendEvent(reactContext, "executeAtSpecificTimeEventFromBroadcastReceiver", intent.getStringExtra("targetTaskName"));
+
+    String action = intent.getAction();
+    Log.i(TAG, "RECEIVE NEW INTENT: " + action);
+    if (action == "android.zx.intent.action.TIME_ACK") {
+      Bundle extras = intent.getExtras();
+    
+      String timeonACK = String.valueOf(intent.getDoubleExtra("timeon", -1));
+      String timeoffACK = String.valueOf(intent.getDoubleExtra("timeoff", -1));
+
+      Log.i(TAG, "TIME_ACK timeon: " + timeonACK);
+      Log.i(TAG, "TIME_ACK timeoff: " + timeoffACK);
+
+      sendEvent(reactContext, "android.zx.intent.action.TIME_ACK", timeonACK + "," + timeoffACK);
+    }
+
+    if (action == "android.zx.intent.action.handshake.APP_RECEIVE") {
+      Bundle extras = intent.getExtras();
+      sendEvent(reactContext, "android.zx.intent.action.handshake.APP_RECEIVE", "good");
+    }
   }
 }
 
@@ -166,7 +187,42 @@ public class OpenSettings extends ReactContextBaseJavaModule {
       mIntent.putExtra("enable", true);
       reactContext.sendBroadcast(mIntent);
 
+      ExecuteAtSpecificTimeReceiver executeAtSpecificTimeReceiver = new ExecuteAtSpecificTimeReceiver(reactContext);
+      reactContext.getCurrentActivity().registerReceiver(executeAtSpecificTimeReceiver, new IntentFilter("android.zx.intent.action.TIME_ACK"));
+
       promise.resolve("Off: " + Arrays.toString(turnDate(offDate)) + " -> On: " +Arrays.toString(turnDate(onDate)));
+    }
+
+    @ReactMethod
+    public void startHandshakeZX(Promise promise) {
+      Log.i(TAG, "startHandshakeZX");
+
+      Intent mIntent = new Intent("android.zx.intent.action.handshake.START");
+      mIntent.putExtra("enable", true);
+      reactContext.sendBroadcast(mIntent);
+
+      ExecuteAtSpecificTimeReceiver executeAtSpecificTimeReceiver = new ExecuteAtSpecificTimeReceiver(reactContext);
+      reactContext.getCurrentActivity().registerReceiver(executeAtSpecificTimeReceiver, new IntentFilter("android.zx.intent.action.handshake.APP_RECEIVE"));
+      promise.resolve("good");
+    }
+
+    @ReactMethod
+    public void rebootWithSignature(Promise promise) {
+      Log.i(TAG, "rebootWithSignature");
+      PowerManager pm = (PowerManager)this.reactContext.getSystemService(reactContext.POWER_SERVICE);
+      pm.reboot(null);
+      promise.resolve("good");
+    }
+
+    @ReactMethod
+    public void responseHandshakeZX(Promise promise) {
+      Log.i(TAG, "responseHandshakeZX");
+
+      Intent mIntent = new Intent("android.zx.intent.action.handshake.APP_RESPONSE");
+      mIntent.putExtra("enable", true);
+      reactContext.sendBroadcast(mIntent);
+
+      promise.resolve("good");
     }
 
     public void resetAutoShutdownAndRestart7InchHelper(int id) {
